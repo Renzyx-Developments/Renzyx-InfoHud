@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Renzyx - InfoHud</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700;800;900&display=swap');
+        
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: 'Rajdhani', sans-serif;
+            background: transparent !important;
+        }
+
+        #hud-container {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 6px;
+        }
+
+        .hud-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(10, 10, 10, 0.9);
+            padding: 5px 12px;
+            border-radius: 0px; 
+            border-left: 3px solid #4caf50;
+            border-top: 1px solid rgba(70, 75, 70, 0.8);
+            border-right: 1px solid rgba(70, 75, 70, 0.8);
+            border-bottom: 1px solid rgba(70, 75, 70, 0.8);
+            min-width: 140px;
+            justify-content: flex-end;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        .icon-circle {
+            width: 26px;
+            height: 26px;
+            background: rgba(20, 25, 20, 1);
+            border-radius: 0px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(76, 175, 80, 0.2);
+            order: 2;
+        }
+
+        .icon-circle i {
+            font-size: 14px;
+            color: #4caf50;
+        }
+
+        .text-info {
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            order: 1;
+        }
+
+        .val-job, .val {
+            font-size: 16px;
+            font-weight: 800;
+            color: #ffffff;
+            text-transform: uppercase;
+            line-height: 1;
+        }
+
+        .val-job { color: #4caf50; }
+
+        .sub-job, .sub {
+            font-size: 9px;
+            color: #a4b0af;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            margin-bottom: 2px;
+        }
+
+        .cash-text { color: #4caf50; }
+        .bank-text { color: #81c784; }
+        .black-text { color: #ff5252; }
+
+        #black-container {
+            display: none;
+            border-left-color: #ff5252;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="hud-container">
+        <div class="hud-item">
+            <div class="text-info">
+                <span class="sub">ID</span>
+                <span class="val" id="player-id">0</span>
+            </div>
+            <div class="icon-circle">
+                <i class="fas fa-id-badge"></i>
+            </div>
+        </div>
+
+        <div class="hud-item">
+            <div class="text-info">
+                <span class="sub-job" id="grade">Munkanélküli</span>
+                <span class="val-job" id="job">Civil</span>
+            </div>
+            <div class="icon-circle">
+                <i class="fas fa-briefcase"></i>
+            </div>
+        </div>
+
+        <div class="hud-item">
+            <div class="text-info">
+                <span class="sub">Cash</span>
+                <span class="val cash-text">$<span id="cash">0</span></span>
+            </div>
+            <div class="icon-circle">
+                <i class="fas fa-wallet"></i>
+            </div>
+        </div>
+
+        <div class="hud-item">
+            <div class="text-info">
+                <span class="sub">Bank</span>
+                <span class="val bank-text">$<span id="bank">0</span></span>
+            </div>
+            <div class="icon-circle">
+                <i class="fas fa-university"></i>
+            </div>
+        </div>
+
+        <div class="hud-item" id="black-container">
+            <div class="text-info">
+                <span class="sub">Dirty</span>
+                <span class="val black-text">$<span id="black">0</span></span>
+            </div>
+            <div class="icon-circle">
+                <i class="fas fa-skull-crossbones"></i>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.addEventListener('message', function(event) {
+            if (event.data.action === "update") {
+                if (event.data.job) $('#job').text(event.data.job);
+                if (event.data.grade) $('#grade').text(event.data.grade);
+                if (event.data.serverId) $('#player-id').text(event.data.serverId);
+                $('#cash').text(event.data.cash.toLocaleString());
+                $('#bank').text(event.data.bank.toLocaleString());
+                if (event.data.black > 0) {
+                    $('#black-container').fadeIn(300).css('display', 'flex');
+                    $('#black').text(event.data.black.toLocaleString());
+                } else {
+                    $('#black-container').fadeOut(300);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
